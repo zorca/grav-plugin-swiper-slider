@@ -28,18 +28,17 @@ class SwiperSliderPlugin extends Plugin
     }
 
     /**
-     * Initialize the plugin
+     * Initialize configuration
      */
     public function onPluginsInitialized()
     {
-        // Don't proceed if we are in the admin plugin
         if ($this->isAdmin()) {
+            $this->active = false;
             return;
         }
 
-        // Enable the main event we are interested in
         $this->enable([
-            'onPageContentRaw' => ['onPageContentRaw', 0]
+            'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
         ]);
     }
 
@@ -59,5 +58,15 @@ class SwiperSliderPlugin extends Plugin
 
         // Prepend the output with the custom text and set back on the page
         $e['page']->setRawContent($text . "\n\n" . $content);
+    }
+
+    public function onTwigSiteVariables()
+    {
+        $this->grav['assets']
+            ->addCss('plugin://swiper-slider/css/swiper.min.css');
+
+        $this->grav['assets']
+            ->add('jquery', 101)
+            ->addJs('plugin://swiper-slider/js/swiper.min.js');
     }
 }
